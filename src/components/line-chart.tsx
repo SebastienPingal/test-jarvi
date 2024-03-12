@@ -1,5 +1,7 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
+import { ChartOptions, Scale, CoreScaleOptions} from 'chart.js'
+
 import 'chart.js/auto'
 
 const LineChart = ({ entries, className }: { entries: any[], className?: string }) => {
@@ -11,7 +13,8 @@ const LineChart = ({ entries, className }: { entries: any[], className?: string 
   }
 
   const labels = entries.filter(entry => entry.type === 'EMAIL_SENT').map(entry => new Date(entry.month).toLocaleString('default', { month: 'long' }))
-  const options = {
+
+  const options: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
       legend: {
@@ -25,8 +28,8 @@ const LineChart = ({ entries, className }: { entries: any[], className?: string 
           text: 'Reply rate'
         },
         ticks: {
-          callback: function(value: number) {
-            return `${value}%`
+          callback: function(this: Scale<CoreScaleOptions>, tickValue: string | number) {
+            return `${tickValue}%`
           }
         }
       }
