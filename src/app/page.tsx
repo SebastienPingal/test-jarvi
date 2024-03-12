@@ -1,6 +1,5 @@
 'use client'
 import { nhost } from "@/app/lib/nhost"
-import LineChart from "@/components/line-chart"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { LoaderCircle } from "lucide-react"

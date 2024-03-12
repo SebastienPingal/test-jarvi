@@ -6,7 +6,7 @@ const DisplayStats = ({ entries, className }: { entries: any[], className: strin
   const calculateAverage = (type : string | null = null) => {
     const filteredEntries = type ? entries.filter(entry => entry.type === type) : entries
     const sum = filteredEntries.reduce((acc, entry) => acc + entry.reply_rate, 0)
-    return (sum / filteredEntries.length).toFixed(1)
+    return (sum / filteredEntries.length * 100).toFixed(1)
   }
 
   const averageReplyRate = calculateAverage()
