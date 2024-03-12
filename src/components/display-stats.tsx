@@ -15,7 +15,7 @@ const DisplayStats = ({ entries, className }: { entries: any[], className: strin
   const averageRepliedRateLinkedinInmail = calculateAverage('LINKEDIN_INMAIL_SENT')
 
   return (
-    <div className={className + " flex flex-col gap-4 items-center"}>
+    <div className={className + " flex flex-col gap-8 items-center"}>
       <h2 className="text-2xl font-bold">Average reply rate</h2>
       <div className="flex justify-between w-full">
         <StatCell title="All" value={averageReplyRate} unity="%" />
