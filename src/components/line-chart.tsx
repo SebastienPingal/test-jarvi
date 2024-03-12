@@ -2,7 +2,7 @@ import React from 'react'
 import { Line } from 'react-chartjs-2'
 import 'chart.js/auto'
 
-const LineChart = ({ entries, className }: { entries: any[], className: string }) => {
+const LineChart = ({ entries, className }: { entries: any[], className?: string }) => {
 
   const formatData = (type: string) => {
     return entries
@@ -25,7 +25,7 @@ const LineChart = ({ entries, className }: { entries: any[], className: string }
           text: 'Reply rate'
         },
         ticks: {
-          callback: function(value) {
+          callback: function(value: number) {
             return `${value}%`
           }
         }

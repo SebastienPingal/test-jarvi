@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { LoaderCircle } from "lucide-react"
 import { useEffect, useState } from "react"
+import DisplayStats from "@/components/display-stats"
 
 export default function Home() {
   const [historyEntries, setHistoryEntries] = useState([])
   const [selectedMonths, setSelectedMonths] = useState("3")
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     console.log('selectedMonths', selectedMonths)
@@ -43,7 +44,9 @@ export default function Home() {
       const { data, error } = await nhost.graphql.request(query)
       if (error) {
         console.error('error', error)
-        setError(error)
+        if ('message' in error) setError(error.message)        
+        else setError(error.map(e => e.message).join(', '))
+
       } else {
         setHistoryEntries(data?.historyentries_monthly_stats || [])
         console.log('historyEntries', data?.historyentries_monthly_stats || 'no data')
@@ -79,7 +82,7 @@ export default function Home() {
         <div>{JSON.stringify(error)}</div>
       ) : historyEntries.length > 0 ? (
         <div>
-          <LineChart className="w-full h-96" entries={historyEntries} />
+          <DisplayStats entries={historyEntries} className="w-full" />
         </div>
       ) : (
         <div>Aucune donnée...</div>
