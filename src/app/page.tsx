@@ -1,5 +1,6 @@
 'use client'
 import { nhost } from "@/app/lib/nhost"
+import LineChart from "@/components/line-chart"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { LoaderCircle } from "lucide-react"
@@ -22,46 +23,30 @@ export default function Home() {
       const startDate = new Date(now.getFullYear(), now.getMonth() - parseInt(selectedMonths), now.getDate()).toISOString()
       let query = ``
 
-      if (selectedMonths === '999') {
-        query = `
-          query GetHistoryentries {
-          historyentries {
-            is_read
-            subject
-            type
-            created_at
-            user_id
-            linkedin_seat_id
-          }
-        }
-      `
-      } else {
-        query = `
-          query GetHistoryentries {
-          historyentries(
+      query = `
+        query GetHistoryentries_monthly_stats {
+          historyentries_monthly_stats (
             where: {
-              created_at: {
-                _gte: "${startDate}",
-              }
-            }) {
-            is_read
-            subject
-            type
-            created_at
-            user_id
-            linkedin_seat_id
-          }
+              ${selectedMonths !== '999' ? `month: {_gte: "${startDate}"}` : ''}
+            },
+            order_by: {month: desc}
+        ) {
+          month
+          replied_messages
+          reply_rate
+          total_messages
+          type
         }
-      `
       }
+    `
 
       const { data, error } = await nhost.graphql.request(query)
       if (error) {
         console.error('error', error)
         setError(error)
       } else {
-        console.log(data)
-        setHistoryEntries(data?.historyentries || [])
+        setHistoryEntries(data?.historyentries_monthly_stats || [])
+        console.log('historyEntries', data?.historyentries_monthly_stats || 'no data')
       }
       setLoading(false)
     }
@@ -71,12 +56,9 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-8 p-8">
-      <h1 className="text-4xl font-bold">Statistique</h1>
+      <h1 className="text-4xl font-bold">Statistiques</h1>
+
       <RadioGroup defaultValue={selectedMonths} onValueChange={setSelectedMonths}>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="1" id="r1" />
-          <Label htmlFor="r1">Le dernier mois</Label>
-        </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="3" id="r2" />
           <Label htmlFor="r2">Les 3 derniers mois</Label>
@@ -90,13 +72,14 @@ export default function Home() {
           <Label htmlFor="r4">Tout</Label>
         </div>
       </RadioGroup>
+
       {loading ? (
         <LoaderCircle className="w-8 h-8 animate-spin" />
       ) : error ? (
         <div>{JSON.stringify(error)}</div>
       ) : historyEntries.length > 0 ? (
         <div>
-          {historyEntries.length}
+          <LineChart className="w-full h-96" entries={historyEntries} />
         </div>
       ) : (
         <div>Aucune donnée...</div>
