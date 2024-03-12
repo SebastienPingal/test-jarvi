@@ -16,7 +16,7 @@ export default function Home() {
   useEffect(() => {
     console.log('selectedMonths', selectedMonths)
     setLoading(true)
-    setError(null)
+    setError('')
 
     const fetchHistoryEntries = async () => {
       console.log('fetchHistoryEntries')
