@@ -14,22 +14,15 @@ export default function Home() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    console.log('selectedMonths', selectedMonths)
     setLoading(true)
     setError('')
-
     const fetchHistoryEntries = async () => {
-      console.log('fetchHistoryEntries')
       const now = new Date()
       const startDate = new Date(now.getFullYear(), now.getMonth() - parseInt(selectedMonths), now.getDate()).toISOString()
-      let query = ``
-
-      query = `
-        query GetHistoryentries_monthly_stats {
+      let query = `
+        query GetHistoryentries_monthly_stats($startDate: timestamptz) {
           historyentries_monthly_stats (
-            where: {
-              ${selectedMonths !== '999' ? `month: {_gte: "${startDate}"}` : ''}
-            },
+            where: { month: {_gte: $startDate} },
             order_by: {month: desc}
         ) {
           month
@@ -38,23 +31,27 @@ export default function Home() {
           total_messages
           type
         }
+      }`
+      let variables = {
+        startDate: startDate,
       }
-    `
 
-      const { data, error } = await nhost.graphql.request(query)
+      const { data, error } = await nhost.graphql.request(query, variables)
       if (error) {
         console.error('error', error)
-        if ('message' in error) setError(error.message)        
-        else setError(error.map(e => e.message).join(', '))
-
+        setError('message' in error ? error.message : error.map(e => e.message).join(', '))
       } else {
         setHistoryEntries(data?.historyentries_monthly_stats || [])
-        console.log('historyEntries', data?.historyentries_monthly_stats || 'no data')
       }
       setLoading(false)
     }
 
-    fetchHistoryEntries()
+    // Introduce a delay before the first fetch
+    const delay = setTimeout(() => {
+      fetchHistoryEntries()
+    }, 2000) // Adjust the delay as needed
+
+    return () => clearTimeout(delay) // Cleanup the timeout
   }, [selectedMonths])
 
   return (
