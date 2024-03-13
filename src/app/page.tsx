@@ -58,20 +58,20 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-8 p-8">
-      <h1 className="text-4xl font-bold">Statistiques</h1>
+      <h1 className="text-4xl font-bold">Stats</h1>
 
       <RadioGroup defaultValue={selectedMonths} onValueChange={setSelectedMonths}>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="3" id="r2" />
-          <Label htmlFor="r2">Les 3 derniers mois</Label>
+          <Label htmlFor="r2">Last 3 months</Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="12" id="r3" />
-          <Label htmlFor="r3">la dernière année</Label>
+          <Label htmlFor="r3">Last year</Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="999" id="r4" />
-          <Label htmlFor="r4">Tout</Label>
+          <Label htmlFor="r4">All time</Label>
         </div>
       </RadioGroup>
 
