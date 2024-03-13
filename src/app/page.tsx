@@ -16,6 +16,7 @@ export default function Home() {
   useEffect(() => {
     setLoading(true)
     setError('')
+    console.log('isAuthenticated', nhost.auth.isAuthenticated())
     const fetchHistoryEntries = async () => {
       const now = new Date()
       const startDate = new Date(now.getFullYear(), now.getMonth() - parseInt(selectedMonths), now.getDate()).toISOString()
@@ -54,7 +55,7 @@ export default function Home() {
     if (nhost.auth.isAuthenticated()) {
       fetchHistoryEntries()
     }
-  }, [selectedMonths, nhost.auth.isAuthenticated])
+  }, [selectedMonths, nhost.auth.isAuthenticated()])
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-8 p-8">
