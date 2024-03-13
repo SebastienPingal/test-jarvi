@@ -11,6 +11,7 @@ export default function Home() {
   const [selectedMonths, setSelectedMonths] = useState("3")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const user_id = '32ca93da-0cf6-4608-91e7-bc6a2dbedcd1'
 
   useEffect(() => {
     setLoading(true)
@@ -19,20 +20,25 @@ export default function Home() {
       const now = new Date()
       const startDate = new Date(now.getFullYear(), now.getMonth() - parseInt(selectedMonths), now.getDate()).toISOString()
       let query = `
-        query GetHistoryentries_monthly_stats($startDate: timestamptz) {
+        query GetHistoryentries_monthly_stats($startDate: timestamptz, $user_id: uuid!) {
           historyentries_monthly_stats (
-            where: { month: {_gte: $startDate} },
+            where: {
+              month: {_gte: $startDate},
+              user_id: {_eq: $user_id}
+            },
             order_by: {month: desc}
-        ) {
-          month
-          replied_messages
-          reply_rate
-          total_messages
-          type
+          ) {
+            month
+            replied_messages
+            reply_rate
+            total_messages
+            type
+          }
         }
-      }`
+      `
       let variables = {
         startDate: startDate,
+        user_id: user_id,
       }
 
       const { data, error } = await nhost.graphql.request(query, variables)
@@ -45,13 +51,10 @@ export default function Home() {
       setLoading(false)
     }
 
-    // Introduce a delay before the first fetch
-    const delay = setTimeout(() => {
+    if (nhost.auth.isAuthenticated()) {
       fetchHistoryEntries()
-    }, 2000) // Adjust the delay as needed
-
-    return () => clearTimeout(delay) // Cleanup the timeout
-  }, [selectedMonths])
+    }
+  }, [selectedMonths, nhost.auth.isAuthenticated])
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-8 p-8">
