@@ -12,11 +12,12 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const user_id = '32ca93da-0cf6-4608-91e7-bc6a2dbedcd1'
+  const [authenticated, setAuthenticated] = useState(false)
 
   useEffect(() => {
     setLoading(true)
     setError('')
-    console.log('isAuthenticated', nhost.auth.isAuthenticated())
+    console.log('authenticated', authenticated)
     const fetchHistoryEntries = async () => {
       const now = new Date()
       const startDate = new Date(now.getFullYear(), now.getMonth() - parseInt(selectedMonths), now.getDate()).toISOString()
@@ -52,10 +53,15 @@ export default function Home() {
       setLoading(false)
     }
 
-    if (nhost.auth.isAuthenticated()) {
+    if (authenticated) {
       fetchHistoryEntries()
     }
-  }, [selectedMonths, nhost.auth.isAuthenticated()])
+  }, [selectedMonths, authenticated])
+
+  nhost.auth.onAuthStateChanged(() => {
+    console.log('isAuthenticated', nhost.auth.isAuthenticated())
+    setAuthenticated(nhost.auth.isAuthenticated())
+  })
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-8 p-8">
