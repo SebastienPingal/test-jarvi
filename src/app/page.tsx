@@ -17,7 +17,6 @@ export default function Home() {
   useEffect(() => {
     setLoading(true)
     setError('')
-    console.log('authenticated', authenticated)
     const fetchHistoryEntries = async () => {
       const now = new Date()
       const startDate = new Date(now.getFullYear(), now.getMonth() - parseInt(selectedMonths), now.getDate()).toISOString()
@@ -59,7 +58,6 @@ export default function Home() {
   }, [selectedMonths, authenticated])
 
   nhost.auth.onAuthStateChanged(() => {
-    console.log('isAuthenticated', nhost.auth.isAuthenticated())
     setAuthenticated(nhost.auth.isAuthenticated())
   })
 
